@@ -1,0 +1,17 @@
+.vs/
+Binaries/
+Content/__ExternalActors__/
+Content/__ExternalObjects__/
+Content/AssetPacks/
+Content/Collections/
+Content/Developers/
+Content/FirstPerson/
+Content/FirstPersonArms/
+Content/FPWeapon/
+Content/LevelPrototyping/
+Content/StarterContent/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+Shooter.sln
