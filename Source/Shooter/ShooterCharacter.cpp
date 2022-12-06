@@ -34,7 +34,6 @@ AShooterCharacter::AShooterCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
-
 }
 
 void AShooterCharacter::BeginPlay()
@@ -58,6 +57,9 @@ void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// Bind fire event
 	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AShooterCharacter::OnPrimaryAction);
 
+	// Bind dash event
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AShooterCharacter::OnDash);
+
 	// Bind movement events
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AShooterCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AShooterCharacter::MoveRight);
@@ -75,6 +77,37 @@ void AShooterCharacter::OnPrimaryAction()
 {
 	// Trigger the OnItemUsed Event
 	OnUseItem.Broadcast();
+}
+
+void AShooterCharacter::OnDash()
+{	
+	const FVector StartTrace = this->GetActorLocation();
+	FVector CurrentRotation = this->GetActorRotation().Vector();
+	FVector EndTrace = StartTrace + CurrentRotation * DashDistance;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	FHitResult Hit;
+	FCollisionQueryParams QueryParams = FCollisionQueryParams::DefaultQueryParam;
+	QueryParams.AddIgnoredComponent(GetMesh());
+	FCollisionResponseParams ResponseParams;
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Visibility, QueryParams, ResponseParams);
+	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, true);
+
+
+	if (!HasDashed)
+	{
+		HasDashed = true;
+		LaunchCharacter(CurrentRotation * DashDistance, true, true);
+		FTimerHandle DashHandle;
+		GetWorldTimerManager().SetTimer(DashHandle, this, &AShooterCharacter::ResetDash, DashCooldown, false);
+	}
+}
+
+void AShooterCharacter::ResetDash()
+{
+	HasDashed = false;
 }
 
 void AShooterCharacter::MoveForward(float Value)

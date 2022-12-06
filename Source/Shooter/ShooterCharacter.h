@@ -49,6 +49,13 @@ protected:
 	/** Fires a projectile. */
 	void OnPrimaryAction();
 
+	/** Makes the player dash in the forward direction. */
+	void OnDash();
+	/** Resets the dash when enough time has passed. */
+	void ResetDash();
+	/** Gets set to true when player shouldn't dash */
+	bool HasDashed = false;
+
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -77,6 +84,11 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	/** The distance in which the player dashes */
+	UPROPERTY(EditAnywhere)
+		float DashDistance = 5000.f;
+	/** The time between each dash. */
+	UPROPERTY(EditAnywhere)
+		float DashCooldown = 2.f;
 };
 
