@@ -86,7 +86,7 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	/** The distance in which the player dashes */
 	UPROPERTY(EditAnywhere)
-		float DashDistance = 5000.f;
+		float DashDistance = 6000.f;
 	/** The time between each dash. */
 	UPROPERTY(EditAnywhere)
 		float DashCooldown = 2.f;
