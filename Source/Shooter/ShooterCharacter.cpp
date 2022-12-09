@@ -40,7 +40,6 @@ void AShooterCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -76,7 +75,13 @@ void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 void AShooterCharacter::OnPrimaryAction()
 {
 	// Trigger the OnItemUsed Event
-	OnUseItem.Broadcast();
+	if (CanShoot)
+	{
+		CanShoot = false;
+		FTimerHandle ShootHandle;
+		GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, ShotCooldown, false);
+		OnUseItem.Broadcast();
+	}
 }
 
 void AShooterCharacter::OnDash()
@@ -96,9 +101,9 @@ void AShooterCharacter::OnDash()
 	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, true);
 
 
-	if (!HasDashed)
+	if (CanDash)
 	{
-		HasDashed = true;
+		CanDash = false;
 		LaunchCharacter(CurrentRotation * DashDistance, true, true);
 		FTimerHandle DashHandle;
 		GetWorldTimerManager().SetTimer(DashHandle, this, &AShooterCharacter::ResetDash, DashCooldown, false);
@@ -107,7 +112,12 @@ void AShooterCharacter::OnDash()
 
 void AShooterCharacter::ResetDash()
 {
-	HasDashed = false;
+	CanDash = true;
+}
+
+void AShooterCharacter::ResetShot()
+{
+	CanShoot = true;
 }
 
 void AShooterCharacter::MoveForward(float Value)

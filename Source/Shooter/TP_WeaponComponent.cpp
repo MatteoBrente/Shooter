@@ -12,7 +12,7 @@
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
-	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	MuzzleOffset = FVector(30.0f, 0.0f, 10.0f);
 }
 
 
@@ -27,19 +27,33 @@ void UTP_WeaponComponent::Fire()
 	if (ProjectileClass != nullptr)
 	{
 		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (World)
 		{
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+			FRotator MuzzleRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 	
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			// Spawn the projectile at the muzzle with a random rotation
+			for (int i = 0; i < PelletNumber; i++)
+			{
+				float RandomRotation = FMath::RandRange(-MaxConeValue, MaxConeValue);
+				UE_LOG(LogTemp, Warning, TEXT("Projectile n. %i rotation: %f"), i, RandomRotation);
+
+				FRotator SpawnRotation =
+				{
+					MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
+					MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
+					MuzzleRotation.Roll
+				};
+
+				const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+
+				World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			}
 		}
 	}
 	

@@ -53,8 +53,13 @@ protected:
 	void OnDash();
 	/** Resets the dash when enough time has passed. */
 	void ResetDash();
-	/** Gets set to true when player shouldn't dash */
-	bool HasDashed = false;
+
+	void ResetShot();
+
+	/** Checks if the player's dash is off cooldown */
+	bool CanDash = true;
+	/** Checks if the player's shot is off cooldown */
+	bool CanShoot = true;
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -89,6 +94,9 @@ public:
 		float DashDistance = 6000.f;
 	/** The time between each dash. */
 	UPROPERTY(EditAnywhere)
-		float DashCooldown = 2.f;
+		float DashCooldown = 3.f;
+	/** Timer between each shot */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float ShotCooldown = 0.75f;
 };
 

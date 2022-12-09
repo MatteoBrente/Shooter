@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/Actor.h"
 #include "TP_WeaponComponent.generated.h"
 
 class AShooterCharacter;
@@ -29,6 +30,14 @@ public:
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	FVector MuzzleOffset;
+
+	/** Maximum offset of the shotgun cone */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float MaxConeValue = 4.f;
+
+	/** Number of pellets per shot */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		int PelletNumber = 8;
 
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
