@@ -12,7 +12,7 @@
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
-	MuzzleOffset = FVector(30.0f, 0.0f, 10.0f);
+	MuzzleOffset = FVector(120.0f, 0.0f, 10.0f);
 }
 
 
@@ -53,6 +53,17 @@ void UTP_WeaponComponent::Fire()
 				const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 
 				World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			}
+
+			if (MuzzleFlash)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation
+				(
+					World, 
+					MuzzleFlash, 
+					GetOwner()->GetActorLocation() + MuzzleRotation.RotateVector(MuzzleOffset),
+					MuzzleRotation
+				);
 			}
 		}
 	}

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "TP_WeaponComponent.h"
+#include "Gun.h"
 #include "Engine/World.h"
 
 #include "ShooterCharacter.generated.h"
@@ -105,9 +105,9 @@ public:
 private:
 	/** The class of gun that should be spawned at the start of the game */
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<AActor> GunClass;
+		TSubclassOf<AGun> GunClass;
 	
 	/** The player's gun object */
-	AActor* Gun;
+	AGun* Gun;
 };
 

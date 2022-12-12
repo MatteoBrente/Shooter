@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Actor.h"
+#include "Particles/WorldPSCPool.h"
+
 #include "TP_WeaponComponent.generated.h"
 
 class AShooterCharacter;
@@ -59,4 +61,7 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AShooterCharacter* Character;
+
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* MuzzleFlash;
 };

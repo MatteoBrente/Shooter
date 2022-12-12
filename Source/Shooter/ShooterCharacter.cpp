@@ -41,9 +41,15 @@ void AShooterCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	Gun = GetWorld()->SpawnActor<AActor>(GunClass);
-	UTP_WeaponComponent* WeaponComponent = Cast<UTP_WeaponComponent>(Gun->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
-	WeaponComponent->AttachWeapon(this);
+	// Spawn the gun object
+	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
+	
+	// Attach the gun to the player
+	if (Gun)
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+		Gun->AttachToComponent(Mesh1P, AttachmentRules, TEXT("GripPoint"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -81,9 +87,31 @@ void AShooterCharacter::OnPrimaryAction()
 	if (CanShoot)
 	{
 		CanShoot = false;
+
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		FRotator CameraRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+		Gun->Fire(CameraRotation);
+		
+		// Try and play the sound if specified
+		if (Gun->FireSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, Gun->FireSound, GetActorLocation());
+		}
+
+		// Try and play a firing animation if specified
+		if (Gun->FireAnimation != nullptr)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(Gun->FireAnimation, 1.f);
+			}
+		}
+
 		FTimerHandle ShootHandle;
 		GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, ShotCooldown, false);
-		OnUseItem.Broadcast();
+
 	}
 }
 
