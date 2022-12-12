@@ -21,8 +21,6 @@ AGun::AGun()
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
-
-	MuzzleOffset = GunMesh->GetSocketLocation(TEXT("WeaponMuzzle"));
 }
 
 // Called every frame
@@ -33,36 +31,40 @@ void AGun::Tick(float DeltaTime)
 
 void AGun::Fire(FRotator MuzzleRotation)
 {
+	UWorld* const World = GetWorld();
+	
 	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	if (!ProjectileClass || !World)
 	{
-		UWorld* const World = GetWorld();
+		return;
+	}
 
-		if (World)
+	//Set Spawn Collision Handling Override
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn the projectile at the muzzle with a random rotation
+	for (int i = 0; i < PelletNumber; i++)
+	{
+		FRotator SpawnRotation =
 		{
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
+			MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
+			MuzzleRotation.Roll
+		};
 
-			// Spawn the projectile at the muzzle with a random rotation
-			for (int i = 0; i < PelletNumber; i++)
-			{
-				FRotator SpawnRotation =
-				{
-					MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
-					MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
-					MuzzleRotation.Roll
-				};
+		const FVector SpawnLocation =  GunMesh->GetSocketLocation(TEXT("WeaponMuzzle"));
+		World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	}
 
-				const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+	// Try and play the sound if specified
+	if (FireSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
 
-				World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
-
-			if (MuzzleFlash)
-			{
-				UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
-			}
-		}
+	if (MuzzleFlash)
+	{
+		UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
 	}
 }

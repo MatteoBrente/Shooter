@@ -83,36 +83,32 @@ void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void AShooterCharacter::OnPrimaryAction()
 {
-	// Trigger the OnItemUsed Event
-	if (CanShoot)
+	// Check if the cooldown is down
+	if (!CanShoot)
+		return;
+
+
+	// Get player controller
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	// Fire the gun, setting the camera rotation as the central line of the cone
+	Gun->Fire(PlayerController->PlayerCameraManager->GetCameraRotation());
+
+	// Try and play a firing animation if specified
+	if (Gun->FireAnimation != nullptr)
 	{
-		CanShoot = false;
-
-		APlayerController* PlayerController = Cast<APlayerController>(GetController());
-		FRotator CameraRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-		Gun->Fire(CameraRotation);
-		
-		// Try and play the sound if specified
-		if (Gun->FireSound != nullptr)
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+		if (AnimInstance)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, Gun->FireSound, GetActorLocation());
+			AnimInstance->Montage_Play(Gun->FireAnimation, 1.f);
 		}
-
-		// Try and play a firing animation if specified
-		if (Gun->FireAnimation != nullptr)
-		{
-			// Get the animation object for the arms mesh
-			UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
-			if (AnimInstance != nullptr)
-			{
-				AnimInstance->Montage_Play(Gun->FireAnimation, 1.f);
-			}
-		}
-
-		FTimerHandle ShootHandle;
-		GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, ShotCooldown, false);
-
 	}
+
+	// Deactivate shooting until the cooldown gets up
+	CanShoot = false;
+	FTimerHandle ShootHandle;
+	GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, ShotCooldown, false);
 }
 
 void AShooterCharacter::OnDash()

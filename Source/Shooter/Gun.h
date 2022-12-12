@@ -31,10 +31,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		UAnimMontage* FireAnimation;
 
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		FVector MuzzleOffset;
-
 	/** Maximum offset of the shotgun cone */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		float MaxConeValue = 4.f;
