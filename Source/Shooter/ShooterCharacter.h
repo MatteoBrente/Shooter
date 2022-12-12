@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "TP_WeaponComponent.h"
+#include "Engine/World.h"
+
 #include "ShooterCharacter.generated.h"
 
 class UInputComponent;
@@ -98,5 +101,13 @@ public:
 	/** Timer between each shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		float ShotCooldown = 0.75f;
+
+private:
+	/** The class of gun that should be spawned at the start of the game */
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AActor> GunClass;
+	
+	/** The player's gun object */
+	AActor* Gun;
 };
 

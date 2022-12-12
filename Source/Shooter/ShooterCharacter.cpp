@@ -40,10 +40,13 @@ void AShooterCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	Gun = GetWorld()->SpawnActor<AActor>(GunClass);
+	UTP_WeaponComponent* WeaponComponent = Cast<UTP_WeaponComponent>(Gun->GetComponentByClass(UTP_WeaponComponent::StaticClass()));
+	WeaponComponent->AttachWeapon(this);
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
-
 void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
