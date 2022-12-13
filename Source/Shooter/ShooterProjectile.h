@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "ShooterProjectile.generated.h"
 
 class USphereComponent;
@@ -21,6 +23,10 @@ class AShooterProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	/** The reference to the Impact particle system */
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* Impact;
 
 public:
 	AShooterProjectile();
