@@ -15,6 +15,7 @@ AGun::AGun()
 	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun Mesh"));
 	GunMesh->SetupAttachment(Root);
 
+	CurrentMuzzle = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +42,7 @@ void AGun::Fire(FRotator MuzzleRotation)
 
 	//Set Spawn Collision Handling Override
 	FActorSpawnParameters ActorSpawnParams;
-	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	// Spawn the projectile at the muzzle with a random rotation
 	for (int i = 0; i < PelletNumber; i++)
@@ -63,8 +64,21 @@ void AGun::Fire(FRotator MuzzleRotation)
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
+	
 	if (MuzzleFlash)
 	{
-		UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
+		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
+		
+		if (!CurrentMuzzle)
+			return;
+
+		FTimerHandle EmitterHandle;
+		GetWorldTimerManager().SetTimer(EmitterHandle, this, &AGun::StopMuzzleParticle, MuzzleTime, false);
 	}
+
+}
+
+void AGun::StopMuzzleParticle()
+{
+	CurrentMuzzle->DestroyComponent();
 }

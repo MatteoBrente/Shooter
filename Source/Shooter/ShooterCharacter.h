@@ -48,6 +48,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnUseItem OnUseItem;
 protected:
+	virtual void Tick(float DeltaTime) override;
 	
 	/** Fires a projectile. */
 	void OnPrimaryAction();

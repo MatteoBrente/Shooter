@@ -10,6 +10,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/WorldPSCPool.h"
+#include "Particles/ParticleSystemComponent.h"
 
 #include "Gun.generated.h"
 
@@ -39,6 +40,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		int PelletNumber = 8;
 
+private:
+	/** The Root component of the various gun components */
+	UPROPERTY(VisibleAnywhere)
+		USceneComponent* Root;
+
+	/** The mesh of the gun */
+	UPROPERTY(VisibleAnywhere)
+		USkeletalMeshComponent* GunMesh;
+
+	/** The reference to the muzzle particle system */
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* MuzzleFlash;
+
+	/** The duration of the muzzle flash */
+	float MuzzleTime = 0.1f;
+
+	/** The muzzle flash that is currently out */
+	UParticleSystemComponent* CurrentMuzzle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,15 +75,6 @@ public:
 		void Fire(FRotator MuzzleRotation);
 
 private:
-	/**  */
-	UPROPERTY(VisibleAnywhere)
-		USceneComponent* Root;
-
-	/**  */
-	UPROPERTY(VisibleAnywhere)
-		USkeletalMeshComponent* GunMesh;
-
-	UPROPERTY(EditAnywhere)
-		UParticleSystem* MuzzleFlash;
-
+	// Makes the muzzle stop shooting
+	void StopMuzzleParticle();
 };
