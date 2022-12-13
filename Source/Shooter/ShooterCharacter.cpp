@@ -116,7 +116,7 @@ void AShooterCharacter::OnPrimaryAction()
 	// Deactivate shooting until the cooldown gets up
 	CanShoot = false;
 	FTimerHandle ShootHandle;
-	GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, ShotCooldown, false);
+	GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, Gun->ShotCooldown, false);
 }
 
 void AShooterCharacter::OnDash()

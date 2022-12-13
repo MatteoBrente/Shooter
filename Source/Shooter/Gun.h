@@ -74,6 +74,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void Fire(FRotator MuzzleRotation);
 
+	/** Timer between each shot */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float ShotCooldown = 1.f;
+
 private:
 	// Makes the muzzle stop shooting
 	void StopMuzzleParticle();

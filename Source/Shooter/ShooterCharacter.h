@@ -99,9 +99,6 @@ public:
 	/** The time between each dash. */
 	UPROPERTY(EditAnywhere)
 		float DashCooldown = 3.f;
-	/** Timer between each shot */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		float ShotCooldown = 0.75f;
 
 private:
 	/** The class of gun that should be spawned at the start of the game */
