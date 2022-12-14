@@ -21,7 +21,7 @@ AShooterCharacter::AShooterCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
 	// set our turn rates for input
-	TurnRateGamepad = 5.f;
+	TurnRateGamepad = 45.f;
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -37,6 +37,8 @@ AShooterCharacter::AShooterCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
+
+	MouseSensitivity = 5;
 }
 
 void AShooterCharacter::BeginPlay()
@@ -78,10 +80,13 @@ void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "Mouse" versions handle devices that provide an absolute delta, such as a mouse.
 	// "Gamepad" versions are for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &AShooterCharacter::TurnAtRateMouse);
+	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &AShooterCharacter::LookUpAtRateMouse);
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AShooterCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AShooterCharacter::LookUpAtRate);
+
+
+	PlayerInputComponent->BindAxis("Sensitivity", this, &AShooterCharacter::ChangeSensitivity);
 }
 
 void AShooterCharacter::Tick(float DeltaTime)
@@ -183,4 +188,24 @@ void AShooterCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
+}
+
+void AShooterCharacter::TurnAtRateMouse(float Rate)
+{
+	// calculate delta for this frame from the rate information
+	AddControllerYawInput(Rate * MouseSensitivity * MouseMultiplier * GetWorld()->GetDeltaSeconds());
+}
+
+void AShooterCharacter::LookUpAtRateMouse(float Rate)
+{
+	// calculate delta for this frame from the rate information
+	AddControllerPitchInput(Rate * MouseSensitivity * MouseMultiplier * GetWorld()->GetDeltaSeconds());
+}
+
+void AShooterCharacter::ChangeSensitivity(float Rate)
+{
+	float NewSens = MouseSensitivity + Rate;
+
+	if (NewSens > 0)
+		MouseSensitivity = NewSens;
 }

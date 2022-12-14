@@ -54,7 +54,8 @@ void AGun::Fire(FRotator MuzzleRotation)
 			MuzzleRotation.Roll
 		};
 
-		const FVector SpawnLocation =  GunMesh->GetSocketLocation(TEXT("WeaponMuzzle"));
+		FVector SpawnLocation =  GunMesh->GetSocketLocation(TEXT("WeaponMuzzle"));
+		SpawnLocation.Z += 10;
 		World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 	}
 

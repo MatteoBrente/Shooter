@@ -82,6 +82,12 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+	void TurnAtRateMouse(float Rate);
+
+	void LookUpAtRateMouse(float Rate);
+
+	void ChangeSensitivity(float Rate);
 	
 protected:
 	// APawn interface
@@ -107,5 +113,8 @@ private:
 	
 	/** The player's gun object */
 	AGun* Gun;
+
+	float MouseSensitivity;
+	const float MouseMultiplier = 5;
 };
 
