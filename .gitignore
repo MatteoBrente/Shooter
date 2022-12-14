@@ -1,5 +1,6 @@
 .vs/
 Binaries/
+Build/
 Content/__ExternalActors__/
 Content/__ExternalObjects__/
 Content/AssetPacks/
@@ -9,6 +10,7 @@ Content/FirstPersonArms/
 Content/FPWeapon/
 Content/LevelPrototyping/
 Content/StarterContent/
+Content/Textures/
 DerivedDataCache/
 Intermediate/
 Saved/
