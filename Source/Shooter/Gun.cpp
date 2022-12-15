@@ -3,6 +3,12 @@
 
 #include "Gun.h"
 
+#include "ShooterProjectile.h"
+#include "GameFramework/PlayerController.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/WorldPSCPool.h"
+
 // Sets default values
 AGun::AGun()
 {
@@ -22,6 +28,8 @@ AGun::AGun()
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GunBarrel = Cast<UTP_BarrelComponent>(this->GetComponentByClass(UTP_BarrelComponent::StaticClass()));
 }
 
 // Called every frame
@@ -32,43 +40,25 @@ void AGun::Tick(float DeltaTime)
 
 void AGun::Fire(FRotator MuzzleRotation)
 {
-	UWorld* const World = GetWorld();
-	
-	// Try and fire a projectile
-	if (!ProjectileClass || !World)
+	if (!GunBarrel)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Non trovo il gunbarrel"));
 		return;
 	}
 
-	//Set Spawn Collision Handling Override
-	FActorSpawnParameters ActorSpawnParams;
-	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	GunBarrel->Fire(MuzzleRotation, GunMesh->GetSocketLocation(TEXT("WeaponMuzzle")));
 
-	// Spawn the projectile at the muzzle with a random rotation
-	for (int i = 0; i < PelletNumber; i++)
-	{
-		FRotator SpawnRotation =
-		{
-			MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
-			MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
-			MuzzleRotation.Roll
-		};
-
-		FVector SpawnLocation =  GunMesh->GetSocketLocation(TEXT("WeaponMuzzle"));
-		SpawnLocation.Z += 10;
-		World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-	}
-
+	
 	// Try and play the sound if specified
-	if (FireSound)
+	if (GunBarrel->FireSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, GunBarrel->FireSound, GetActorLocation());
 	}
 
 	
-	if (MuzzleFlash)
+	if (GunBarrel->MuzzleFlash)
 	{
-		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
+		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached(GunBarrel->MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
 		
 		if (!CurrentMuzzle)
 			return;

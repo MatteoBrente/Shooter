@@ -3,6 +3,8 @@
 
 #include "TP_BarrelComponent.h"
 
+#include "ShooterProjectile.h"
+
 // Sets default values for this component's properties
 UTP_BarrelComponent::UTP_BarrelComponent()
 {
@@ -32,3 +34,34 @@ void UTP_BarrelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
+
+void UTP_BarrelComponent::Fire(FRotator MuzzleRotation, FVector SpawnLocation)
+{
+	UWorld* const World = GetWorld();
+
+	// Try and fire a projectile
+	if (!ProjectileClass || !World)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ciao"));
+		return;
+	}
+
+	//Set Spawn Collision Handling Override
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	// Spawn the projectile at the muzzle with a random rotation
+	for (int i = 0; i < PelletNumber; i++)
+	{
+		FRotator SpawnRotation =
+		{
+			MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
+			MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
+			MuzzleRotation.Roll
+		};
+
+		SpawnLocation.Z += 10;
+
+		World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	}
+}

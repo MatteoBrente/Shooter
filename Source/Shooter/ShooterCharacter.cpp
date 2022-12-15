@@ -98,7 +98,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 void AShooterCharacter::OnPrimaryAction()
 {
 	// Check if the cooldown is down
-	if (!CanShoot)
+	if (!CanShoot || !Gun)
 		return;
 
 
@@ -109,13 +109,13 @@ void AShooterCharacter::OnPrimaryAction()
 	Gun->Fire(PlayerController->PlayerCameraManager->GetCameraRotation());
 
 	// Try and play a firing animation if specified
-	if (Gun->FireAnimation != nullptr)
+	if (Gun->GunBarrel->FireAnimation != nullptr)
 	{
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
 		if (AnimInstance)
 		{
-			AnimInstance->Montage_Play(Gun->FireAnimation, 1.f);
+			AnimInstance->Montage_Play(Gun->GunBarrel->FireAnimation, 1.f);
 		}
 	}
 

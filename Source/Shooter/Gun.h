@@ -5,12 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-#include "ShooterProjectile.h"
-#include "GameFramework/PlayerController.h"
-#include "Camera/PlayerCameraManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Particles/WorldPSCPool.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "TP_BarrelComponent.h"
 
 #include "Gun.generated.h"
 
@@ -20,25 +16,12 @@ class SHOOTER_API AGun : public AActor
 	GENERATED_BODY()
 	
 public:
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AShooterProjectile> ProjectileClass;
 
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		USoundBase* FireSound;
+	/** The muzzle flash that is currently out */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
+	UParticleSystemComponent* CurrentMuzzle;
 
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		UAnimMontage* FireAnimation;
-
-	/** Maximum offset of the shotgun cone */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		float MaxConeValue = 4.f;
-
-	/** Number of pellets per shot */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		int PelletNumber = 8;
+	UTP_BarrelComponent* GunBarrel;
 
 private:
 	/** The Root component of the various gun components */
@@ -49,15 +32,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 		USkeletalMeshComponent* GunMesh;
 
-	/** The reference to the muzzle particle system */
-	UPROPERTY(EditAnywhere)
-		UParticleSystem* MuzzleFlash;
-
 	/** The duration of the muzzle flash */
 	float MuzzleTime = 0.1f;
-
-	/** The muzzle flash that is currently out */
-	UParticleSystemComponent* CurrentMuzzle;
 
 protected:
 	// Called when the game starts or when spawned
