@@ -85,8 +85,9 @@ void AShooterCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AShooterCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AShooterCharacter::LookUpAtRate);
 
-
-	PlayerInputComponent->BindAxis("Sensitivity", this, &AShooterCharacter::ChangeSensitivity);
+	// Placeholder sensitivity controls
+	PlayerInputComponent->BindAction("SensitivityUp", IE_Released, this, &AShooterCharacter::IncreaseSensitivity);
+	PlayerInputComponent->BindAction("SensitivityDown", IE_Released, this, &AShooterCharacter::DecreaseSensitivity);
 }
 
 void AShooterCharacter::Tick(float DeltaTime)
@@ -202,10 +203,13 @@ void AShooterCharacter::LookUpAtRateMouse(float Rate)
 	AddControllerPitchInput(Rate * MouseSensitivity * MouseMultiplier * GetWorld()->GetDeltaSeconds());
 }
 
-void AShooterCharacter::ChangeSensitivity(float Rate)
+void AShooterCharacter::IncreaseSensitivity()
 {
-	float NewSens = MouseSensitivity + Rate;
+	MouseSensitivity++;
+}
 
-	if (NewSens > 0)
-		MouseSensitivity = NewSens;
+void AShooterCharacter::DecreaseSensitivity()
+{
+	if (MouseSensitivity > 1)
+		MouseSensitivity--;
 }

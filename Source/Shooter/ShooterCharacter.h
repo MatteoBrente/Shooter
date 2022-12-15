@@ -87,7 +87,8 @@ protected:
 
 	void LookUpAtRateMouse(float Rate);
 
-	void ChangeSensitivity(float Rate);
+	void IncreaseSensitivity();
+	void DecreaseSensitivity();
 	
 protected:
 	// APawn interface
