@@ -6,62 +6,44 @@
 #include "ShooterProjectile.h"
 
 // Sets default values for this component's properties
-UTP_BarrelComponent::UTP_BarrelComponent()
+UTP_BarrelComponent::UTP_BarrelComponent() 
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
 // Called when the game starts
-void UTP_BarrelComponent::BeginPlay()
+void UTP_BarrelComponent::BeginPlay() 
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
 // Called every frame
-void UTP_BarrelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UTP_BarrelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	// ...
+FRotator UTP_BarrelComponent::RandomizeRotation(FRotator Rotation)
+{
+	FRotator NewRotation = Rotation;
+		
+	NewRotation.Pitch += FMath::RandRange(-MaxConeValue, MaxConeValue);
+	NewRotation.Yaw += FMath::RandRange(-MaxConeValue, MaxConeValue);
+	
+	return NewRotation;
 }
 
 
-void UTP_BarrelComponent::Fire(FRotator MuzzleRotation, FVector SpawnLocation)
+
+FVector UTP_BarrelComponent::CorrectSpawnPoint(FVector Position)
 {
-	UWorld* const World = GetWorld();
+	FVector NewPosition = Position;
 
-	// Try and fire a projectile
-	if (!ProjectileClass || !World)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ciao"));
-		return;
-	}
+	NewPosition.Z += 20;
 
-	//Set Spawn Collision Handling Override
-	FActorSpawnParameters ActorSpawnParams;
-	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-	// Spawn the projectile at the muzzle with a random rotation
-	for (int i = 0; i < PelletNumber; i++)
-	{
-		FRotator SpawnRotation =
-		{
-			MuzzleRotation.Pitch + FMath::RandRange(-MaxConeValue, MaxConeValue),
-			MuzzleRotation.Yaw + FMath::RandRange(-MaxConeValue, MaxConeValue),
-			MuzzleRotation.Roll
-		};
-
-		SpawnLocation.Z += 10;
-
-		World->SpawnActor<AShooterProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-	}
+	return NewPosition;
 }

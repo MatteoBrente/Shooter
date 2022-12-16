@@ -7,7 +7,7 @@
 #include "TP_BarrelComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTER_API UTP_BarrelComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -27,12 +27,13 @@ public:
 
 	/** Maximum offset of the shotgun cone */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		float MaxConeValue = 4.f;
+		float MaxConeValue = 5.f;
 
 	/** Number of pellets per shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		int PelletNumber = 8;
+		int PelletNumber = 5;
 
+	/** The particle system that spawns when the gun is fired */
 	UPROPERTY(EditAnywhere)
 		UParticleSystem* MuzzleFlash;
 
@@ -49,8 +50,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 
-	/** Make the weapon Fire a Projectile */
+	/** Make the weapon Fire Projectile(s) */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Weapon")
+		void Fire(FVector SpawnLocation, FRotator MuzzleRotation);
+
+	/** Adds a random rotation to the gun's projectiles */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-		void Fire(FRotator MuzzleRotation, FVector SpawnLocation);
-		
+		FRotator RandomizeRotation(FRotator Rotation);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		FVector CorrectSpawnPoint(FVector Position);
 };

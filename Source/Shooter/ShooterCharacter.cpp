@@ -109,7 +109,7 @@ void AShooterCharacter::OnPrimaryAction()
 	Gun->Fire(PlayerController->PlayerCameraManager->GetCameraRotation());
 
 	// Try and play a firing animation if specified
-	if (Gun->GunBarrel->FireAnimation != nullptr)
+	if (Gun->GunBarrel && Gun->GunBarrel->FireAnimation)
 	{
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();

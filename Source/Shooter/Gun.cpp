@@ -42,11 +42,11 @@ void AGun::Fire(FRotator MuzzleRotation)
 {
 	if (!GunBarrel)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Non trovo il gunbarrel"));
+		UE_LOG(LogTemp, Warning, TEXT("Gun Barrel Reference Not Found"));
 		return;
 	}
 
-	GunBarrel->Fire(MuzzleRotation, GunMesh->GetSocketLocation(TEXT("WeaponMuzzle")));
+	GunBarrel->Fire(GunMesh->GetSocketLocation(TEXT("WeaponMuzzle")), MuzzleRotation);
 
 	
 	// Try and play the sound if specified
