@@ -38,15 +38,14 @@ void AGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AGun::Fire(FRotator MuzzleRotation)
+bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation)
 {
-	if (!GunBarrel)
+	if (!GunBarrel || !CanShoot)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Gun Barrel Reference Not Found"));
-		return;
+		return false;
 	}
 
-	GunBarrel->Fire(GunMesh->GetSocketLocation(TEXT("WeaponMuzzle")), MuzzleRotation);
+	GunBarrel->Fire(MuzzlePosition, MuzzleRotation);
 
 	
 	// Try and play the sound if specified
@@ -60,13 +59,24 @@ void AGun::Fire(FRotator MuzzleRotation)
 	{
 		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached(GunBarrel->MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
 		
-		if (!CurrentMuzzle)
-			return;
-
-		FTimerHandle EmitterHandle;
-		GetWorldTimerManager().SetTimer(EmitterHandle, this, &AGun::StopMuzzleParticle, MuzzleTime, false);
+		if (CurrentMuzzle)
+		{
+			FTimerHandle EmitterHandle;
+			GetWorldTimerManager().SetTimer(EmitterHandle, this, &AGun::StopMuzzleParticle, MuzzleTime, false);
+		}
 	}
 
+	// Deactivate shooting until the cooldown gets up
+	CanShoot = false;
+	FTimerHandle ShootHandle;
+	GetWorldTimerManager().SetTimer(ShootHandle, this, &AGun::ResetShot, GunBarrel->ShotCooldown, false);
+
+	return true;
+}
+
+void AGun::ResetShot()
+{
+	CanShoot = true;
 }
 
 void AGun::StopMuzzleParticle()

@@ -35,6 +35,9 @@ private:
 	/** The duration of the muzzle flash */
 	float MuzzleTime = 0.1f;
 
+	/** Checks if the player's shot is off cooldown */
+	bool CanShoot = true;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -48,13 +51,11 @@ public:
 
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-		void Fire(FRotator MuzzleRotation);
-
-	/** Timer between each shot */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-		float ShotCooldown = 1.f;
+		bool Fire(FVector MuzzlePosition, FRotator MuzzleRotation);
 
 private:
 	// Makes the muzzle stop shooting
 	void StopMuzzleParticle();
+
+	void ResetShot();
 };

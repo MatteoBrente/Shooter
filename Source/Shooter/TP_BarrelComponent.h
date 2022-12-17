@@ -60,4 +60,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FVector CorrectSpawnPoint(FVector Position);
+
+	/** Timer between each shot */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float ShotCooldown = 1.f;
 };

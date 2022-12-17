@@ -98,7 +98,7 @@ void AShooterCharacter::Tick(float DeltaTime)
 void AShooterCharacter::OnPrimaryAction()
 {
 	// Check if the cooldown is down
-	if (!CanShoot || !Gun)
+	if (!Gun)
 		return;
 
 
@@ -106,11 +106,14 @@ void AShooterCharacter::OnPrimaryAction()
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	// Fire the gun, setting the camera rotation as the central line of the cone
-	Gun->Fire(PlayerController->PlayerCameraManager->GetCameraRotation());
-
-	// Try and play a firing animation if specified
-	if (Gun->GunBarrel && Gun->GunBarrel->FireAnimation)
+	FVector ProjLocation = GetActorLocation() + ProjectileSpawnPoint;
+	FRotator ProjRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+	
+	if (Gun->Fire(ProjLocation, ProjRotation))
 	{
+		if (!Gun->GunBarrel || !Gun->GunBarrel->FireAnimation)
+			return;
+		
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
 		if (AnimInstance)
@@ -119,10 +122,7 @@ void AShooterCharacter::OnPrimaryAction()
 		}
 	}
 
-	// Deactivate shooting until the cooldown gets up
-	CanShoot = false;
-	FTimerHandle ShootHandle;
-	GetWorldTimerManager().SetTimer(ShootHandle, this, &AShooterCharacter::ResetShot, Gun->ShotCooldown, false);
+	
 }
 
 void AShooterCharacter::OnDash()
@@ -154,11 +154,6 @@ void AShooterCharacter::OnDash()
 void AShooterCharacter::ResetDash()
 {
 	CanDash = true;
-}
-
-void AShooterCharacter::ResetShot()
-{
-	CanShoot = true;
 }
 
 void AShooterCharacter::MoveForward(float Value)

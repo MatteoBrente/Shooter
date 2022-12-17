@@ -58,13 +58,6 @@ protected:
 	/** Resets the dash when enough time has passed. */
 	void ResetDash();
 
-	void ResetShot();
-
-	/** Checks if the player's dash is off cooldown */
-	bool CanDash = true;
-	/** Checks if the player's shot is off cooldown */
-	bool CanShoot = true;
-
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -106,6 +99,8 @@ public:
 	/** The time between each dash. */
 	UPROPERTY(EditAnywhere)
 		float DashCooldown = 3.f;
+	/** The part of the mouse sensitivity that can be changed by the player */
+	float MouseSensitivity;
 
 private:
 	/** The class of gun that should be spawned at the start of the game */
@@ -115,7 +110,14 @@ private:
 	/** The player's gun object */
 	AGun* Gun;
 
-	float MouseSensitivity;
+	/** A multiplier for the mouse sensitivity that lets the player deal with more normal numbers */
 	const float MouseMultiplier = 5;
+
+	/** The point where the projectiles spawn. It's here so that it can be centered with the camera */
+	UPROPERTY (EditAnywhere)
+		FVector ProjectileSpawnPoint = { 30.f, 0.f, 40.f };
+
+	/** Checks if the player's dash is off cooldown */
+	bool CanDash = true;
 };
 
