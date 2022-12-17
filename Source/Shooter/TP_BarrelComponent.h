@@ -13,10 +13,6 @@ class SHOOTER_API UTP_BarrelComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AShooterProjectile> ProjectileClass;
-
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		USoundBase* FireSound;
