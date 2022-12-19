@@ -74,6 +74,38 @@ bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation)
 	return true;
 }
 
+void AGun::AddGunComponent(UActorComponent* NewComponent)
+{
+	UClass* ComponentClass = NewComponent->GetClass();
+	
+	if (ComponentClass->GetSuperClass() == UTP_BarrelComponent::StaticClass())
+	{
+		ChangeBarrel(Cast<UTP_BarrelComponent>(NewComponent));
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MA CIAO BELLAH"));
+	}
+}
+
+
+void AGun::ChangeBarrel(UTP_BarrelComponent* Barrel)
+{
+	// Copy the referenced component
+	UTP_BarrelComponent* CopiedComponent = DuplicateObject<UTP_BarrelComponent>(Barrel, this);
+
+	if (!CopiedComponent)
+		return;
+		
+	// Destroy the old barrel component
+	GunBarrel->DestroyComponent();
+	
+	// Set the copied component as the new barrel
+	this->AddInstanceComponent(CopiedComponent);
+	GunBarrel = CopiedComponent;
+}
+
 void AGun::ResetShot()
 {
 	CanShoot = true;

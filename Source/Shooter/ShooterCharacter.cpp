@@ -193,3 +193,8 @@ void AShooterCharacter::DecreaseSensitivity()
 	if (MouseSensitivity > 1)
 		MouseSensitivity--;
 }
+
+void AShooterCharacter::PickUpGunComponent(UActorComponent* NewComponent)
+{
+	Gun->AddGunComponent(NewComponent);
+}

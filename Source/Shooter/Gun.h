@@ -53,6 +53,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		bool Fire(FVector MuzzlePosition, FRotator MuzzleRotation);
 
+	void AddGunComponent(UActorComponent* NewComponent);
+
+	void ChangeBarrel(UTP_BarrelComponent* Barrel);
+
 private:
 	// Makes the muzzle stop shooting
 	void StopMuzzleParticle();

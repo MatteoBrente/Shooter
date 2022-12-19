@@ -40,6 +40,12 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	/** Substitutes a gun component for another one */
+	UFUNCTION(BlueprintCallable)
+		void PickUpGunComponent(UActorComponent* NewComponent);
+
+
 protected:
 	virtual void BeginPlay();
 
