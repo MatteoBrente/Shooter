@@ -36,18 +36,17 @@ class AShooterCharacter : public ACharacter
 public:
 	AShooterCharacter();
 
+	/** Returns Mesh1P subobject **/
+	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+	/** Returns FirstPersonCameraComponent subobject **/
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 protected:
 	virtual void BeginPlay();
 
-public:
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float TurnRateGamepad;
+	// APawn interface
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	// End of APawn interface
 
-	/** Delegate to whom anyone can subscribe to receive this event */
-	UPROPERTY(BlueprintAssignable, Category = "Interaction")
-	FOnUseItem OnUseItem;
-protected:
 	virtual void Tick(float DeltaTime) override;
 	
 	/** Fires a projectile. */
@@ -82,25 +81,25 @@ protected:
 
 	void IncreaseSensitivity();
 	void DecreaseSensitivity();
-	
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
-	// End of APawn interface
 
 public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
+	float TurnRateGamepad;
+
+	/** Delegate to whom anyone can subscribe to receive this event */
+	UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	FOnUseItem OnUseItem;
+
 	/** The distance in which the player dashes */
 	UPROPERTY(EditAnywhere)
 		float DashDistance = 6000.f;
 	/** The time between each dash. */
 	UPROPERTY(EditAnywhere)
 		float DashCooldown = 3.f;
+
 	/** The part of the mouse sensitivity that can be changed by the player */
-	float MouseSensitivity;
+	float MouseSensitivity = 5;
 
 private:
 	/** The class of gun that should be spawned at the start of the game */

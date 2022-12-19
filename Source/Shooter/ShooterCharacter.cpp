@@ -37,8 +37,6 @@ AShooterCharacter::AShooterCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
-
-	MouseSensitivity = 5;
 }
 
 void AShooterCharacter::BeginPlay()
@@ -121,34 +119,21 @@ void AShooterCharacter::OnPrimaryAction()
 			AnimInstance->Montage_Play(Gun->GunBarrel->FireAnimation, 1.f);
 		}
 	}
-
-	
 }
 
 void AShooterCharacter::OnDash()
 {	
-	const FVector StartTrace = this->GetActorLocation();
-	FVector CurrentRotation = this->GetActorRotation().Vector();
-	FVector EndTrace = StartTrace + CurrentRotation * DashDistance;
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	// Check if the dash is off cooldown
+	if (!CanDash)
+		return;
 
-	FHitResult Hit;
-	FCollisionQueryParams QueryParams = FCollisionQueryParams::DefaultQueryParam;
-	QueryParams.AddIgnoredComponent(GetMesh());
-	FCollisionResponseParams ResponseParams;
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECollisionChannel::ECC_Visibility, QueryParams, ResponseParams);
-	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, true);
+	// Execute the dash in the direction of the player movement (so you can dash sideways)
+	LaunchCharacter(this->GetLastMovementInputVector() * DashDistance, true, true);
 
-
-	if (CanDash)
-	{
-		CanDash = false;
-		LaunchCharacter(CurrentRotation * DashDistance, true, true);
-		FTimerHandle DashHandle;
-		GetWorldTimerManager().SetTimer(DashHandle, this, &AShooterCharacter::ResetDash, DashCooldown, false);
-	}
+	// Start the cooldown of the dash
+	CanDash = false;
+	FTimerHandle DashHandle;
+	GetWorldTimerManager().SetTimer(DashHandle, this, &AShooterCharacter::ResetDash, DashCooldown, false);
 }
 
 void AShooterCharacter::ResetDash()
