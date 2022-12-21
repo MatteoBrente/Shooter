@@ -4,7 +4,6 @@
 #include "Gun.h"
 
 #include "ShooterProjectile.h"
-#include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/WorldPSCPool.h"
@@ -12,9 +11,6 @@
 // Sets default values
 AGun::AGun()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 
@@ -32,23 +28,13 @@ void AGun::BeginPlay()
 	GunBarrel = Cast<UTP_BarrelComponent>(this->GetComponentByClass(UTP_BarrelComponent::StaticClass()));
 }
 
-// Called every frame
-void AGun::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation)
+bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation, AController* Controller)
 {
 	if (!GunBarrel || !CanShoot)
-	{
 		return false;
-	}
 
-	GunBarrel->Fire(MuzzlePosition, MuzzleRotation);
+	GunBarrel->Fire(MuzzlePosition, MuzzleRotation, Controller);
 
-	
-	// Try and play the sound if specified
 	if (GunBarrel->FireSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, GunBarrel->FireSound, GetActorLocation());
@@ -57,7 +43,8 @@ bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation)
 	
 	if (GunBarrel->MuzzleFlash)
 	{
-		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached(GunBarrel->MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
+		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached
+			(GunBarrel->MuzzleFlash, GunMesh, TEXT("WeaponMuzzle"));
 		
 		if (CurrentMuzzle)
 		{
@@ -76,23 +63,19 @@ bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation)
 
 void AGun::AddGunComponent(UActorComponent* NewComponent)
 {
-	UClass* ComponentClass = NewComponent->GetClass();
+	// Need to get the component class so that I can call the correct function later
+	UClass* SuperClass = NewComponent->GetClass()->GetSuperClass();
 	
-	if (ComponentClass->GetSuperClass() == UTP_BarrelComponent::StaticClass())
+	if (SuperClass == UTP_BarrelComponent::StaticClass())
 	{
 		ChangeBarrel(Cast<UTP_BarrelComponent>(NewComponent));
-	}
-
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MA CIAO BELLAH"));
 	}
 }
 
 
 void AGun::ChangeBarrel(UTP_BarrelComponent* Barrel)
 {
-	// Copy the referenced component
+	// Duplicates the barrel so that I can paste it into the gun
 	UTP_BarrelComponent* CopiedComponent = DuplicateObject<UTP_BarrelComponent>(Barrel, this);
 
 	if (!CopiedComponent)
@@ -101,7 +84,7 @@ void AGun::ChangeBarrel(UTP_BarrelComponent* Barrel)
 	// Destroy the old barrel component
 	GunBarrel->DestroyComponent();
 	
-	// Set the copied component as the new barrel
+	// Set the duplicated barrel as the current one
 	this->AddInstanceComponent(CopiedComponent);
 	GunBarrel = CopiedComponent;
 }

@@ -48,7 +48,7 @@ public:
 
 	/** Make the weapon Fire Projectile(s) */
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Weapon")
-		void Fire(FVector SpawnLocation, FRotator MuzzleRotation);
+		void Fire(FVector SpawnLocation, FRotator MuzzleRotation, AController* Controller);
 
 	/** Adds a random rotation to the gun's projectiles */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")

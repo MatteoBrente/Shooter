@@ -101,13 +101,14 @@ void AShooterCharacter::OnPrimaryAction()
 
 
 	// Get player controller
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	AController* ControllerRef = GetController();
+	APlayerController* PlayerController = Cast<APlayerController>(ControllerRef);
 
 	// Fire the gun, setting the camera rotation as the central line of the cone
 	FVector ProjLocation = GetActorLocation() + ProjectileSpawnPoint;
 	FRotator ProjRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 	
-	if (Gun->Fire(ProjLocation, ProjRotation))
+	if (Gun->Fire(ProjLocation, ProjRotation, ControllerRef))
 	{
 		if (!Gun->GunBarrel || !Gun->GunBarrel->FireAnimation)
 			return;

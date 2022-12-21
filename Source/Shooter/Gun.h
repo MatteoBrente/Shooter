@@ -46,12 +46,9 @@ public:
 	// Sets default values for this actor's properties
 	AGun();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-		bool Fire(FVector MuzzlePosition, FRotator MuzzleRotation);
+		bool Fire(FVector MuzzlePosition, FRotator MuzzleRotation, AController* Controller);
 
 	void AddGunComponent(UActorComponent* NewComponent);
 

@@ -24,10 +24,6 @@ class AShooterProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
-	/** The reference to the Impact particle system */
-	UPROPERTY(EditAnywhere)
-		UParticleSystem* Impact;
-
 public:
 	AShooterProjectile();
 
@@ -39,5 +35,18 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+public:
+//	/** The reference to the player pawn (need it for the damage instigator) */
+//	UPROPERTY(BlueprintReadWrite)
+//		AController* PlayerController;
+
+	/** The amount of damage that is dealt upon hit */
+	UPROPERTY(EditAnywhere)
+		float Damage = 10.f;
+
+	/** The reference to the Impact particle system */
+	UPROPERTY(EditAnywhere)
+		UParticleSystem* Impact;
 };
 
