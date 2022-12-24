@@ -33,19 +33,17 @@ AShooterProjectile::AShooterProjectile()
 
 void AShooterProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
 	if (OtherActor && (OtherActor != this))
 	{
 		FDamageEvent DE;
-
 		OtherActor->TakeDamage(Damage, DE, nullptr, this);
-		UE_LOG(LogTemp, Warning, TEXT("Took %f damage"), Damage);
 
+		// Only add impulse if we hit a physics
 		if (OtherComp && OtherComp->IsSimulatingPhysics())
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 	}
 
-	// Spawn impact emitter and destroy the projectile
+	// Spawn impact emitter and destroy the projectile on hit
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), Impact, GetActorLocation(), GetActorRotation());
 	Destroy();
 }
