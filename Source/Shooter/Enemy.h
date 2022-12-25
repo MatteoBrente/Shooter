@@ -7,8 +7,7 @@
 #include "Enemy.generated.h"
 
 UCLASS()
-class SHOOTER_API AEnemy : public ACharacter
-{
+class SHOOTER_API AEnemy : public ACharacter {
 	GENERATED_BODY()
 
 public:

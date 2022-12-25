@@ -7,8 +7,7 @@
 #include "EnemyController.generated.h"
 
 UCLASS()
-class SHOOTER_API AEnemyController : public AAIController
-{
+class SHOOTER_API AEnemyController : public AAIController {
 	GENERATED_BODY()
 
 protected:
@@ -16,5 +15,11 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	APawn* Player;
+
+	UPROPERTY(EditAnywhere)
+		class UBehaviorTree* AIBehavior;
 	
 };
