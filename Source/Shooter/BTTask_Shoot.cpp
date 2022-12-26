@@ -2,6 +2,8 @@
 
 
 #include "BTTask_Shoot.h"
+#include "AIController.h"
+#include "Enemy.h"
 
 UBTTask_Shoot::UBTTask_Shoot()
 {
@@ -12,7 +14,20 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	AAIController* Owner = OwnerComp.GetAIOwner();
 
+	if (!Owner) 
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	AEnemy* Character = Cast<AEnemy>(Owner->GetPawn());
+	if (!Character)
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	Character->Shoot();
 
 	return EBTNodeResult::Succeeded;
 }

@@ -32,6 +32,13 @@ public:
 	UFUNCTION(BlueprintPure)
 		bool IsDead() const;
 
+	void Shoot();
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Shooting")
+		void SpawnProjectiles();
+
+private:
+	void ResetShot();
 
 public:
 	/** The initial health of the actor */
@@ -41,4 +48,10 @@ public:
 	/** The current health of the actor */
 	UPROPERTY(VisibleAnywhere)
 		float Health;
+
+private:
+	bool CanShoot = true;
+
+	UPROPERTY(EditAnywhere)
+		float ShotCooldown = 5.f;
 };

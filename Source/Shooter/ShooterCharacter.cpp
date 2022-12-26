@@ -95,16 +95,12 @@ void AShooterCharacter::Tick(float DeltaTime)
 
 void AShooterCharacter::OnPrimaryAction()
 {
-	// Check if the cooldown is down
 	if (!Gun)
 		return;
 
-
-	// Get player controller
+	// Calculate the rotation and position for the projectile to spawn in
 	AController* ControllerRef = GetController();
 	APlayerController* PlayerController = Cast<APlayerController>(ControllerRef);
-
-	// Fire the gun, setting the camera rotation as the central line of the cone
 	FVector ProjLocation = GetActorLocation() + ProjectileSpawnPoint;
 	FRotator ProjRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 	
