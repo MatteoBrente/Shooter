@@ -6,34 +6,40 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/Blackboardcomponent.h"
 
-void AEnemyController::BeginPlay() {
+void AEnemyController::BeginPlay() 
+{
 	Super::BeginPlay();
 
-	if (AIBehavior) {
-		RunBehaviorTree(AIBehavior);
+	APawn* MyPawn = GetPawn();
 
-		APawn* MyPawn = GetPawn();
+	if (!AIBehavior || !MyPawn)
+		return;
 
-		if (MyPawn) {
-			GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), MyPawn->GetActorLocation());
-		}
+	RunBehaviorTree(AIBehavior);
 
-		// Get Player Location
-		Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (MyPawn) 
+	{
+		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), MyPawn->GetActorLocation());
 	}
+
+	// Get Player Location
+	Player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
-void AEnemyController::Tick(float DeltaTime) {
+void AEnemyController::Tick(float DeltaTime) 
+{
 	Super::Tick(DeltaTime);
 
-	if (Player && LineOfSightTo(Player)) {
+	if (Player && LineOfSightTo(Player)) 
+	{
 		SetFocus(Player);
 
 		FVector PlayerLocation = Player->GetActorLocation();
 		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerLocation);
 		GetBlackboardComponent()->SetValueAsVector(TEXT("LastPlayerLocation"), PlayerLocation);
 	}
-	else {
+	else 
+	{
 		ClearFocus(EAIFocusPriority::Gameplay);
 
 		GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
