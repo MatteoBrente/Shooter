@@ -17,15 +17,12 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	AAIController* Owner = OwnerComp.GetAIOwner();
 
 	if (!Owner) 
-	{
 		return EBTNodeResult::Failed;
-	}
 	
 	AEnemy* Character = Cast<AEnemy>(Owner->GetPawn());
+
 	if (!Character)
-	{
 		return EBTNodeResult::Failed;
-	}
 
 	Character->Shoot();
 

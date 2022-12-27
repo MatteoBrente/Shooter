@@ -2,7 +2,6 @@
 
 
 #include "EnemyController.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/Blackboardcomponent.h"
 
@@ -29,19 +28,4 @@ void AEnemyController::BeginPlay()
 void AEnemyController::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
-
-	if (Player && LineOfSightTo(Player)) 
-	{
-		SetFocus(Player);
-
-		FVector PlayerLocation = Player->GetActorLocation();
-		GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerLocation);
-		GetBlackboardComponent()->SetValueAsVector(TEXT("LastPlayerLocation"), PlayerLocation);
-	}
-	else 
-	{
-		ClearFocus(EAIFocusPriority::Gameplay);
-
-		GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-	}
 }

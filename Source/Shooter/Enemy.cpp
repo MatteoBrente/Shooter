@@ -50,22 +50,3 @@ bool AEnemy::IsDead() const
 {
 	return (Health <= 0.f);
 }
-
-void AEnemy::Shoot()
-{
-	if (!CanShoot)
-		return;
-
-	
-	SpawnProjectiles();
-		
-	// Deactivate shooting until the cooldown gets up
-	CanShoot = false;
-	FTimerHandle ShootHandle;
-	GetWorldTimerManager().SetTimer(ShootHandle, this, &AEnemy::ResetShot, ShotCooldown, false);
-}
-
-void AEnemy::ResetShot()
-{
-	CanShoot = true;
-}
