@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEnemy::AEnemy() 
@@ -22,9 +23,6 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
-
-	if (IsDead())
-		this->Destroy();
 }
 
 // Called to bind functionality to input
@@ -42,6 +40,13 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 
 	Health -= DamageApplied;
 	UE_LOG(LogTemp, Warning, TEXT("Current Health is equal to: %f"), Health);
+
+	if (IsDead())
+	{
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 
 	return DamageApplied;
 }
