@@ -45,7 +45,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void PickUpGunComponent(UActorComponent* NewComponent);
 
-
 protected:
 	virtual void BeginPlay();
 
@@ -88,6 +87,12 @@ protected:
 	void IncreaseSensitivity();
 	void DecreaseSensitivity();
 
+private:
+	// Applies damage to the actor
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	bool IsDead();
+
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -106,6 +111,12 @@ public:
 
 	/** The part of the mouse sensitivity that can be changed by the player */
 	float MouseSensitivity = 5;
+
+	/** The current health of the player */
+	float Health;
+
+	/** The maximum health of the player */
+	float MaxHealth = 100;
 
 private:
 	/** The class of gun that should be spawned at the start of the game */

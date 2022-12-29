@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "ShooterGameMode.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,6 +44,8 @@ void AShooterCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	Health = MaxHealth;
 
 	// Spawn the gun object
 	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
@@ -189,6 +192,38 @@ void AShooterCharacter::DecreaseSensitivity()
 {
 	if (MouseSensitivity > 1)
 		MouseSensitivity--;
+}
+
+float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	// Calculate the damage. If it's more than the current health, set health to 0
+	float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	DamageApplied = FMath::Min(Health, DamageApplied);
+
+	Health -= DamageApplied;
+	UE_LOG(LogTemp, Warning, TEXT("Current Player Health is equal to: %f"), Health);
+
+	if (IsDead())
+	{
+		// End the game
+		AShooterGameMode* GM = GetWorld()->GetAuthGameMode<AShooterGameMode>();
+		if (GM)
+		{
+			GM->PawnKilled(this);
+		}
+
+		// Deactivate controls and collisions
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	return DamageApplied;
+}
+
+bool AShooterCharacter::IsDead()
+{
+	return (Health <= 0);
 }
 
 void AShooterCharacter::PickUpGunComponent(UActorComponent* NewComponent)

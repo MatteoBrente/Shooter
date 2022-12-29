@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include "Components/CapsuleComponent.h"
+#include "ShooterGameMode.h"
 
 // Sets default values
 AEnemy::AEnemy() 
@@ -46,6 +47,13 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 		DetachFromControllerPendingDestroy();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	// End the game
+	AShooterGameMode* GM = GetWorld()->GetAuthGameMode<AShooterGameMode>();
+	if (GM)
+	{
+		GM->PawnKilled(this);
 	}
 
 	return DamageApplied;
