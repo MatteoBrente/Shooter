@@ -6,9 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ShooterGameMode.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class SHOOTER_API AShooterGameMode : public AGameModeBase
 {
@@ -16,5 +14,7 @@ class SHOOTER_API AShooterGameMode : public AGameModeBase
 
 public:
 	virtual void PawnKilled(APawn* Pawn);
-	
+
+private:
+	void EndGame(bool PlayerIsWinner);
 };

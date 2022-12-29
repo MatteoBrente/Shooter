@@ -15,9 +15,14 @@ class SHOOTER_API AShooterPlayerController : public APlayerController
 private:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
+	void ActivateWidget(TSubclassOf<class UUserWidget> WidgetClass);
+
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> LoseScreenClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> WinScreenClass;
 
 	UPROPERTY(EditAnywhere)
 		float RestartDelay = 5.f;

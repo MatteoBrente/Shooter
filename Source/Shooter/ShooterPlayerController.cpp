@@ -8,13 +8,20 @@
 void AShooterPlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
 {
 	Super::GameHasEnded(EndGameFocus, bIsWinner);
-	
-	// Create the lose screen widget and activate it
-	UUserWidget* LoseScreen = CreateWidget(this, LoseScreenClass);
-	if (LoseScreen)
-		LoseScreen->AddToViewport();
+
+	if (bIsWinner)
+		ActivateWidget(WinScreenClass);
+	else
+		ActivateWidget(LoseScreenClass);
 
 	// Set the restart timer
 	FTimerHandle RestartTimer;
 	GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, RestartDelay);
+}
+
+void AShooterPlayerController::ActivateWidget(TSubclassOf<class UUserWidget> WidgetClass)
+{
+	UUserWidget* Widget = CreateWidget(this, WidgetClass);
+	if (Widget)
+		Widget->AddToViewport();
 }
