@@ -116,7 +116,8 @@ public:
 	float Health;
 
 	/** The maximum health of the player */
-	float MaxHealth = 100;
+	UPROPERTY(EditAnywhere)
+		float MaxHealth = 100;
 
 private:
 	/** The class of gun that should be spawned at the start of the game */

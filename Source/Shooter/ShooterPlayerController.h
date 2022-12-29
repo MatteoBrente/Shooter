@@ -6,9 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "ShooterPlayerController.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class SHOOTER_API AShooterPlayerController : public APlayerController
 {
@@ -18,6 +16,9 @@ private:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
 private:
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> LoseScreenClass;
+
 	UPROPERTY(EditAnywhere)
 		float RestartDelay = 5.f;
 };
