@@ -45,6 +45,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void PickUpGunComponent(UActorComponent* NewComponent);
 
+	/** Gets the player's health percent */
+	UFUNCTION(BlueprintCallable)
+		float GetHealthPercent();
+
 protected:
 	virtual void BeginPlay();
 
@@ -132,9 +136,8 @@ private:
 
 	/** The point where the projectiles spawn. It's here so that it can be centered with the camera */
 	UPROPERTY (EditAnywhere)
-		FVector ProjectileSpawnPoint = { 30.f, 0.f, 40.f };
+		FVector ProjectileSpawnPoint = { 0.f, 0.f, 40.f };
 
 	/** Checks if the player's dash is off cooldown */
 	bool CanDash = true;
 };
-

@@ -36,11 +36,11 @@ bool AGun::Fire(FVector MuzzlePosition, FRotator MuzzleRotation, AController* Co
 	GunBarrel->Fire(MuzzlePosition, MuzzleRotation, Controller);
 
 	if (GunBarrel->FireSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, GunBarrel->FireSound, GetActorLocation());
-	}
+		UGameplayStatics::UGameplayStatics::SpawnSoundAttached
+			(GunBarrel->FireSound, GunMesh, TEXT("WeaponSound"));
 
 	
+	// Spawn muzzle flash and destroy it after MuzzleTime seconds
 	if (GunBarrel->MuzzleFlash)
 	{
 		CurrentMuzzle =	UGameplayStatics::SpawnEmitterAttached
@@ -67,9 +67,7 @@ void AGun::AddGunComponent(UActorComponent* NewComponent)
 	UClass* SuperClass = NewComponent->GetClass()->GetSuperClass();
 	
 	if (SuperClass == UTP_BarrelComponent::StaticClass())
-	{
 		ChangeBarrel(Cast<UTP_BarrelComponent>(NewComponent));
-	}
 }
 
 
@@ -84,7 +82,7 @@ void AGun::ChangeBarrel(UTP_BarrelComponent* Barrel)
 	// Destroy the old barrel component
 	GunBarrel->DestroyComponent();
 	
-	// Set the duplicated barrel as the current one
+	// Add the duplicated component and set it as the current barrel
 	this->AddInstanceComponent(CopiedComponent);
 	GunBarrel = CopiedComponent;
 }

@@ -36,12 +36,3 @@ FRotator UTP_BarrelComponent::RandomizeRotation(FRotator Rotation)
 	
 	return NewRotation;
 }
-
-
-FVector UTP_BarrelComponent::CorrectSpawnPoint(FVector Position)
-{
-	FVector NewPosition = Position;
-	NewPosition.Z += 20;
-
-	return NewPosition;
-}

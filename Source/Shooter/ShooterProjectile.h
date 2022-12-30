@@ -47,6 +47,10 @@ public:
 
 	/** The reference to the Impact particle system */
 	UPROPERTY(EditAnywhere)
-		UParticleSystem* Impact;
+		UParticleSystem* ImpactParticle;
+
+	/** The reference to the Impact sound*/
+	UPROPERTY(EditAnywhere)
+		USoundBase* ImpactSound;
 };
 

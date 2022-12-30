@@ -103,9 +103,8 @@ void AShooterCharacter::OnPrimaryAction()
 
 	// Calculate the rotation and position for the projectile to spawn in
 	AController* ControllerRef = GetController();
-	APlayerController* PlayerController = Cast<APlayerController>(ControllerRef);
 	FVector ProjLocation = GetActorLocation() + ProjectileSpawnPoint;
-	FRotator ProjRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+	FRotator ProjRotation = Cast<APlayerController>(ControllerRef)->PlayerCameraManager->GetCameraRotation();
 	
 	if (Gun->Fire(ProjLocation, ProjRotation, ControllerRef))
 	{
@@ -115,9 +114,7 @@ void AShooterCharacter::OnPrimaryAction()
 		// Get the animation object for the arms mesh
 		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
 		if (AnimInstance)
-		{
 			AnimInstance->Montage_Play(Gun->GunBarrel->FireAnimation, 1.f);
-		}
 	}
 }
 
@@ -194,6 +191,9 @@ void AShooterCharacter::DecreaseSensitivity()
 		MouseSensitivity--;
 }
 
+
+//////////////////////////////////////////////////////////// UTILITIES
+
 float AShooterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	// Calculate the damage. If it's more than the current health, set health to 0
@@ -229,4 +229,9 @@ bool AShooterCharacter::IsDead()
 void AShooterCharacter::PickUpGunComponent(UActorComponent* NewComponent)
 {
 	Gun->AddGunComponent(NewComponent);
+}
+
+float AShooterCharacter::GetHealthPercent()
+{
+	return Health / MaxHealth;
 }

@@ -12,6 +12,9 @@ class SHOOTER_API AShooterPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
@@ -23,6 +26,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> WinScreenClass;
+
+	/** The blueprint class of the health bar */
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> HealthBarClass;
 
 	UPROPERTY(EditAnywhere)
 		float RestartDelay = 5.f;
