@@ -15,6 +15,10 @@ class SHOOTER_API AShooterPlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	UFUNCTION(BlueprintCallable)
+		int GetRemainingDelay();
+
 private:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
@@ -33,4 +37,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		float RestartDelay = 5.f;
+
+	FTimerHandle RestartTimer;
 };

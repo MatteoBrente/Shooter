@@ -4,6 +4,7 @@
 #include "ShooterPlayerController.h"
 #include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
+#include <cmath>
 
 void AShooterPlayerController::BeginPlay()
 {
@@ -22,7 +23,6 @@ void AShooterPlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner
 		ActivateWidget(LoseScreenClass);
 
 	// Set the restart timer
-	FTimerHandle RestartTimer;
 	GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, RestartDelay);
 }
 
@@ -31,4 +31,15 @@ void AShooterPlayerController::ActivateWidget(TSubclassOf<class UUserWidget> Wid
 	UUserWidget* Widget = CreateWidget(this, WidgetClass);
 	if (Widget)
 		Widget->AddToViewport();
+}
+
+int AShooterPlayerController::GetRemainingDelay()
+{
+	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(RestartTimer);
+
+	// If I don't do this, the time remaining goes to -1 even if I use ceil :D
+	if (TimeRemaining <= 0.f)
+		return 0;
+	
+	return ceil(TimeRemaining);
 }
