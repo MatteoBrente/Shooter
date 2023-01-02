@@ -63,3 +63,13 @@ bool AEnemy::IsDead() const
 {
 	return (Health <= 0.f);
 }
+
+FRotator AEnemy::AddRandomRotation(FRotator InputRotation, float PlayerSpeed, float Multiplier)
+{
+	// Add a random rotation on the pitch and yaw based on the player speed magnitude
+	float RandomComponent = PlayerSpeed * Multiplier;
+	float NewYaw = InputRotation.Yaw + FMath::RandRange(-RandomComponent, RandomComponent);
+	
+	
+	return FRotator{ InputRotation.Pitch, NewYaw, InputRotation.Roll};
+}

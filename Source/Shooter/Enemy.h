@@ -35,6 +35,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Shooting")
 		void Shoot();
 
+	UFUNCTION(BlueprintCallable)
+		FRotator AddRandomRotation(FRotator InputRotation, float PlayerSpeed, float Multiplier);
+
 public:
 	/** The initial health of the actor */
 	UPROPERTY(EditDefaultsOnly)
