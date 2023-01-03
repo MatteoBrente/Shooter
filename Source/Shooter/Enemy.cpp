@@ -73,3 +73,13 @@ FRotator AEnemy::AddRandomRotation(FRotator InputRotation, float PlayerSpeed, fl
 	
 	return FRotator{ InputRotation.Pitch, NewYaw, InputRotation.Roll};
 }
+
+void AEnemy::SpawnObjectOnDeath(TSubclassOf<AActor> ObjectClass)
+{
+	UClass* Class = ObjectClass;
+
+	if (Class)
+	{
+		AActor* NewObj = GetWorld()->SpawnActor(Class, &GetActorTransform());
+	}
+}

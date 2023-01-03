@@ -15,14 +15,15 @@ class SHOOTER_API AShooterPlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	UFUNCTION(BlueprintCallable)
-		int GetRemainingDelay();
-
 private:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
 	void ActivateWidget(TSubclassOf<class UUserWidget> WidgetClass);
+
+	void SpawnEnemyWave();
+
+	UFUNCTION(BlueprintCallable)
+		int GetRemainingDelay();
 
 private:
 	UPROPERTY(EditAnywhere)

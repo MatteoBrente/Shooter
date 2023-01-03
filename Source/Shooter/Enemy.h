@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FRotator AddRandomRotation(FRotator InputRotation, float PlayerSpeed, float Multiplier);
 
+	UFUNCTION(BlueprintCallable)
+		void SpawnObjectOnDeath(TSubclassOf<AActor> ObjectClass);
+
 public:
 	/** The initial health of the actor */
 	UPROPERTY(EditDefaultsOnly)
