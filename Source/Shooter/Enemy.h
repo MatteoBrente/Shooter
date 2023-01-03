@@ -39,7 +39,7 @@ public:
 		FRotator AddRandomRotation(FRotator InputRotation, float PlayerSpeed, float Multiplier);
 
 	UFUNCTION(BlueprintCallable)
-		void SpawnObjectOnDeath(TSubclassOf<AActor> ObjectClass);
+		void SpawnLoot();
 
 public:
 	/** The initial health of the actor */
@@ -49,4 +49,8 @@ public:
 	/** The current health of the actor */
 	UPROPERTY(VisibleAnywhere)
 		float Health;
+
+	/** The class of the object to spawn on death */
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> LootClass;
 };

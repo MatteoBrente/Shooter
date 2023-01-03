@@ -24,6 +24,12 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
+
+	if (IsDead())
+	{
+		SpawnLoot();
+		Destroy(); // this
+	}
 }
 
 // Called to bind functionality to input
@@ -74,12 +80,10 @@ FRotator AEnemy::AddRandomRotation(FRotator InputRotation, float PlayerSpeed, fl
 	return FRotator{ InputRotation.Pitch, NewYaw, InputRotation.Roll};
 }
 
-void AEnemy::SpawnObjectOnDeath(TSubclassOf<AActor> ObjectClass)
+void AEnemy::SpawnLoot()
 {
-	UClass* Class = ObjectClass;
-
-	if (Class)
+	if (LootClass)
 	{
-		AActor* NewObj = GetWorld()->SpawnActor(Class, &GetActorTransform());
+		AActor* NewObj = GetWorld()->SpawnActor(LootClass, &GetActorTransform());
 	}
 }
