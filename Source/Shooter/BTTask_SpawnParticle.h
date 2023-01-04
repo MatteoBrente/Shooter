@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "BTTask_SpawnParticle.generated.h"
 
-#include "BTTask_Shoot.generated.h"
-
-
+/**
+ * 
+ */
 UCLASS()
-class SHOOTER_API UBTTask_Shoot : public UBTTaskNode
+class SHOOTER_API UBTTask_SpawnParticle : public UBTTaskNode
 {
 	GENERATED_BODY()
-
+	
 public:
-	UBTTask_Shoot();
+	UBTTask_SpawnParticle();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
-	
 };

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Particles/ParticleSystemComponent.h"
+
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -29,6 +31,12 @@ public:
 	// Applies damage to the actor
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
 
+	void SpawnMuzzleParticle();
+
+	void StopMuzzleParticle();
+
+	void Die();
+
 	UFUNCTION(BlueprintPure)
 		bool IsDead() const;
 
@@ -53,4 +61,13 @@ public:
 	/** The class of the object to spawn on death */
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AActor> LootClass;
+
+	/** The muzzle flash of the enemy's gun */
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystem* MuzzleFlash;
+
+	UParticleSystemComponent* CurrentMuzzle;
+
+private:
+	USkeletalMeshComponent* Mesh;
 };

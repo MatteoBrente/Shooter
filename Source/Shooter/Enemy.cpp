@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include "Components/CapsuleComponent.h"
 #include "ShooterGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AEnemy::AEnemy() 
@@ -18,18 +20,14 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;
+
+	Mesh = GetMesh();
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
-
-	if (IsDead())
-	{
-		SpawnLoot();
-		Destroy(); // this
-	}
 }
 
 // Called to bind functionality to input
@@ -50,12 +48,19 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 
 	if (IsDead())
 	{
+		// Detach the collision in order to avoid the player gets caught in it
 		DetachFromControllerPendingDestroy();
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		SpawnLoot();
+
+		// Destroy the actor after a brief delay
+		FTimerHandle DieHandle;
+		GetWorldTimerManager().SetTimer(DieHandle, this, &AEnemy::Die, 2.f, false);
 	}
 
-	// End the game
+	// Notify the game manager that I died, to decide if I should advance the game
 	AShooterGameMode* GM = GetWorld()->GetAuthGameMode<AShooterGameMode>();
 	if (GM)
 	{
@@ -63,6 +68,33 @@ float AEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEv
 	}
 
 	return DamageApplied;
+}
+
+void AEnemy::SpawnMuzzleParticle()
+{
+	if (!MuzzleFlash || !Mesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Non trovo la mesh o il muzzleflash"));
+		return;
+	}
+
+	CurrentMuzzle = UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("Muzzle_01"));
+
+	if (CurrentMuzzle)
+	{
+		FTimerHandle EmitterHandle;
+		GetWorldTimerManager().SetTimer(EmitterHandle, this, &AEnemy::StopMuzzleParticle, 0.8f, false);
+	}
+}
+
+void AEnemy::StopMuzzleParticle()
+{
+	CurrentMuzzle->DestroyComponent();
+}
+
+void AEnemy::Die() 
+{
+	this->Destroy();
 }
 
 bool AEnemy::IsDead() const
