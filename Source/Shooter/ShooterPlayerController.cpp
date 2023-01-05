@@ -33,11 +33,6 @@ void AShooterPlayerController::ActivateWidget(TSubclassOf<class UUserWidget> Wid
 		Widget->AddToViewport();
 }
 
-void AShooterPlayerController::SpawnEnemyWave()
-{
-
-}
-
 int AShooterPlayerController::GetRemainingDelay()
 {
 	float TimeRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(RestartTimer);

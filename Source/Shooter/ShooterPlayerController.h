@@ -20,8 +20,6 @@ private:
 
 	void ActivateWidget(TSubclassOf<class UUserWidget> WidgetClass);
 
-	void SpawnEnemyWave();
-
 	UFUNCTION(BlueprintCallable)
 		int GetRemainingDelay();
 

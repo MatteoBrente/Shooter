@@ -5,6 +5,17 @@
 #include "EngineUtils.h"
 #include "GameFramework/Controller.h"
 #include "EnemyController.h"
+#include "Kismet/GameplayStatics.h"
+
+void AShooterGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentWaveNumber = 0;
+
+	for (AEnemySpawner* ES : TActorRange<AEnemySpawner>(GetWorld()))
+		Spawner = ES;
+}
 
 void AShooterGameMode::PawnKilled(APawn* Pawn)
 {
@@ -19,9 +30,27 @@ void AShooterGameMode::PawnKilled(APawn* Pawn)
 	{
 		if (!EC->IsDead())
 			return;
-	}
 
-	EndGame(true);
+		// If there are no enemies, check if we are in the last wave
+		if (CurrentWaveNumber == 0)
+		{
+			SpawnEnemyWave();
+			return;
+		}
+	}
+			EndGame(true);
+}
+
+
+void AShooterGameMode::SpawnEnemyWave()
+{
+	CurrentWaveNumber++;
+
+	if (Spawner)
+	{
+		Spawner->SpawnEnemies();
+		UE_LOG(LogTemp, Warning, TEXT("AMOGUSSSSSS"));
+	}
 }
 
 void AShooterGameMode::EndGame(bool PlayerIsWinner)
